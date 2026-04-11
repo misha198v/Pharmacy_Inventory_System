@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pharmacy Inventory</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f4f7f6; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h1 { color: #2e7d32; }
+        
+        /* Search Section */
+        .search-container { margin-bottom: 20px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .search-form { display: flex; gap: 10px; }
+        .search-input { flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; }
+        .search-btn { padding: 10px 25px; background-color: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .clear-btn { padding: 10px 15px; text-decoration: none; color: #666; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9; display: flex; align-items: center; }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #2e7d32; color: white; text-transform: uppercase; letter-spacing: 1px; }
+        tr:hover { background-color: #f1f8e9; }
+        
+        /* Badges & Buttons */
+        .stock-badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; background-color: #e8f5e9; color: #2e7d32; }
+        .low-stock-badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; background-color: #ffebee; color: #c62828; }
+        .expired-badge { color: white; background-color: #b71c1c; padding: 5px 10px; border-radius: 4px; font-weight: bold; }
+        .warning-badge { color: #455a64; background-color: #fff176; padding: 5px 10px; border-radius: 4px; font-weight: bold; }
+        .sell-btn { background-color: #fb8c00; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .sell-btn:hover { background-color: #ef6c00; }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <h1>Current Stock Inventory</h1>
+        <a href="/admin" style="text-decoration: none; color: #666;">Admin Login</a>
+    </div>
+
+    <div class="search-container">
+        <form method="GET" action="" class="search-form">
+            <input type="text" name="search" placeholder="Search by medicine name..." value="{{ query|default:'' }}" class="search-input">
+            <button type="submit" class="search-btn">Search</button>
+            {% if query %}<a href="/inventory/" class="clear-btn">Clear</a>{% endif %}
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Medicine Name</th>
+                <th>Price (UGX)</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for med in medicines %}
+            <tr>
+                <td><strong>{{ med.name }}</strong></td>
+                <td>{{ med.price }}</td>
+                <td>
+                    {% if med.stock_quantity < med.reorder_level %}
+                        <span class="low-stock-badge">{{ med.stock_quantity }} (Low Stock!)</span>
+                    {% else %}
+                        <span class="stock-badge">{{ med.stock_quantity }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if med.expiry_date <= today %}
+                        <span class="expired-badge">EXPIRED ({{ med.expiry_date }})</span>
+                    {% elif med.expiry_date <= warning_date %}
+                        <span class="warning-badge">Expiring Soon ({{ med.expiry_date }})</span>
+                    {% else %}
+                        {{ med.expiry_date }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if med.stock_quantity > 0 %}
+                        <form action="{% url 'sell_medicine' med.pk %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="sell-btn">Sell 1</button>
+                        </form>
+                    {% else %}
+                        <span style="color: #999;">Out of Stock</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 30px; color: #888;">
+                    No medicines found. {% if query %}Try clearing search.{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
