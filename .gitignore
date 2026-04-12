@@ -1,0 +1,14 @@
+# Python junk
+__pycache__/
+*.pyc
+venv_pharmacy/
+db.sqlite3
+
+# React junk
+node_modules/
+.env
+build/
+
+# Operating system junk
+.DS_Store
+Thumbs.db
