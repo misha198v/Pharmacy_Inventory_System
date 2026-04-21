@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders', # Add this for CORS
     'inventory',
-    'rest_framework', # Add this for DRF
+    'rest_framework',
+     'rest_framework.authtoken' # Add this for DRF
 ]
 
 MIDDLEWARE = [
@@ -120,3 +121,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True # Add this to allow all origins for CORS
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+
+
+}
