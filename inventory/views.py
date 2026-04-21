@@ -1,11 +1,16 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated 
 from .models import Medicine
 from .serializers import MedicineSerializer
+from inventory.permissions import IsManagerOrReadOnly
 
 class MedicineViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsManagerOrReadOnly]
     serializer_class = MedicineSerializer
+    permission_classes = [IsAuthenticated] 
+    queryset = Medicine.objects.all()
 
     # 1. Search Logic (Filtering)
     def get_queryset(self):
@@ -25,4 +30,4 @@ class MedicineViewSet(viewsets.ModelViewSet):
             medicine.save()
             return Response({'status': 'sold', 'new_quantity': medicine.stock_quantity})
         else:
-            return Response({'error': 'Out of stock'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Out of stock'}, status=status.HTTP_400_BAD_REQUEST) 

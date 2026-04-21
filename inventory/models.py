@@ -1,5 +1,12 @@
 from django.db import models
 from django.db import models
+from django.contrib.auth.models import User
+
+class InventoryLog(models.Model):
+    medicine = models.ForeignKey(Medicine, on_激on_delete=models.CASCADE)
+    action = models.CharField(max_length=50) # e.g., "Added 50 units"
+    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 class Medicine(models.Model):
     name = models.CharField(max_length=200)

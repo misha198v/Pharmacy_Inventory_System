@@ -12,3 +12,20 @@ build/
 # Operating system junk
 .DS_Store
 Thumbs.db
+
+# -----------------------------------------
+# React Frontend (Subfolder)
+# -----------------------------------------
+pharmacy-frontend/node_modules/
+pharmacy-frontend/build/
+pharmacy-frontend/.pnp
+pharmacy-frontend/.pnp.js
+pharmacy-frontend/coverage/
+pharmacy-frontend/.env.local
+pharmacy-frontend/.env.development.local
+pharmacy-frontend/.env.test.local
+pharmacy-frontend/.env.production.local
+pharmacy-frontend/npm-debug.log*
+pharmacy-frontend/yarn-debug.log*
+pharmacy-frontend/yarn-error.log*
+
