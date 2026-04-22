@@ -3,7 +3,7 @@
 
 A full stack pharmacy inventory system that combines a Django REST API , a React dashboard and a Jupyter AI/ML notebook to automate stock management ,predict demand and prevent medicine expiry waste. 
 
-Project Overview 
+Project Overview   
 A traditional pharmacy stock management relies on manual tracking which leads to expired medicines sitting on shelves, stockouts of high demand drugs and no visibility into who made changes. This system solves all those problems by integrating :
 #  A web dashboard where staff log in
  and manage stock in real time .
