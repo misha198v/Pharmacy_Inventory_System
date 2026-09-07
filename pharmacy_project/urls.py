@@ -1,13 +1,9 @@
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from inventory.views import MedicineViewSet, login_view
-
-router = DefaultRouter()
-router.register(r'medicines', MedicineViewSet)
 
 urlpatterns = [
+    path('', lambda request: redirect('http://localhost:3000/')),
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('api/login/', login_view),
+    path('api/', include('inventory.urls')), # Add this line for DRF's login/logout views
 ]

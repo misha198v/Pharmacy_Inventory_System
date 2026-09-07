@@ -15,7 +15,6 @@ function App() {
   });
   const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [loginError, setLoginError] = useState('');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const saved = localStorage.getItem('pharmacy_user');
     if (saved) {
@@ -23,6 +22,8 @@ function App() {
       setUser(parsed);
       fetchData(parsed.token);
     }
+  // The effect intentionally runs once to restore the persisted session.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogin = async (e) => {
