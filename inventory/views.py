@@ -1,3 +1,4 @@
+from .permissions import IsManagerOrReadOnly 
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -28,7 +29,7 @@ def login_view(request):
 class MedicineViewSet(viewsets.ModelViewSet):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsManagerOrReadOnly]
 
     def perform_create(self, serializer):
         # Save who added the medicine
