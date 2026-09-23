@@ -6,11 +6,15 @@ const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
 const LoginForm = lazy(() => import('./components/Auth/LoginForm'));
 
 function AppContent() {
-  const { user } = useAuth();
+  const { user, isLoading, error, login } = useAuth();
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      {user ? <Dashboard /> : <LoginForm />}
+      {user ? (
+        <Dashboard />
+      ) : (
+        <LoginForm onSubmit={login} isLoading={isLoading} error={error} />
+      )}
     </Suspense>
   );
 }

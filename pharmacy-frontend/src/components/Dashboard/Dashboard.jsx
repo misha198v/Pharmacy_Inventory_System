@@ -1,13 +1,11 @@
 import React from 'react';
-import { useAuth } from '../../context/AuthContext';
+import AppLayout from '../Layout/AppLayout';
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
-
   return (
-    <div>
-      <h1>Welcome, {user?.username || 'User'}!</h1>
-      <button onClick={logout}>Log Out</button>
-    </div>
+    <AppLayout>
+      <h1>Dashboard</h1>
+      <p>Welcome to your pharmacy inventory dashboard.</p>
+    </AppLayout>
   );
 }
