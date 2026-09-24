@@ -22,8 +22,16 @@ def login_view(request):
             role = user.userprofile.role
         except:
             role = 'staff'
-        return Response({'token': token.key, 'username': user.username, 'role': role})
-    return Response({'error': 'Invalid credentials'}, status=400)
+        return Response({
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'role': role,
+            },
+            'token': token.key,
+        })
+    return Response({'detail': 'Invalid username or password'}, status=401)
+
 
 # MEDICINE VIEWSET
 class MedicineViewSet(viewsets.ModelViewSet):

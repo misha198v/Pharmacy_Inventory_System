@@ -11,13 +11,14 @@ export function AuthProvider({ children }) {
   setIsLoading(true);
   setError('');
   try {
-    const response = await fetch('http://localhost:8000/api/auth/login/', {
+    const response = await fetch('http://localhost:8000/api/login/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
     });
 
     if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
       throw new Error('Invalid username or password');
     }
 

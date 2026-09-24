@@ -11,12 +11,21 @@ class UserProfile(models.Model):
 
 class Medicine(models.Model):
     name = models.CharField(max_length=200)
+    generic_name = models.CharField(max_length=200, blank=True, null=True)
+    category = models.CharField(max_length=100, blank=True, null=True)
+    batch_number = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     stock_quantity = models.IntegerField(default=0)
+    unit = models.CharField(max_length=50, blank=True, null=True)
     reorder_level = models.IntegerField(default=10)
     expiry_date = models.DateField()
-    added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # tracks who added
+    manufacture_date = models.DateField(blank=True, null=True)
+    supplier = models.CharField(max_length=200, blank=True, null=True)
+    added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+
 
     class Meta:
         ordering = ['expiry_date']

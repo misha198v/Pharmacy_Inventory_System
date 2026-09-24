@@ -9,8 +9,12 @@ class MedicineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Medicine
-        fields = ['id', 'name', 'description', 'price', 'stock_quantity',
-                  'reorder_level', 'expiry_date', 'status', 'days_until_expiry', 'added_by_username']
+        fields = [
+            'id', 'name', 'generic_name', 'category', 'batch_number',
+            'description', 'price', 'cost_price', 'stock_quantity', 'unit',
+            'reorder_level', 'expiry_date', 'manufacture_date', 'supplier',
+            'status', 'days_until_expiry', 'added_by_username',
+        ]
 
     def get_added_by_username(self, obj):
         return obj.added_by.username if obj.added_by else "Unknown"
