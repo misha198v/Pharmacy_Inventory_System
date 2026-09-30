@@ -18,13 +18,13 @@ export function AuthProvider({ children }) {
     });
 
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
+      await response.json().catch(() => ({}));
       throw new Error('Invalid username or password');
     }
-
+   // use without saving to unused state 
     const data = await response.json();
-    setUser(data.user);
-    localStorage.setItem('pharmacy_user', JSON.stringify(data.user));
+    setUser(data);
+    localStorage.setItem('pharmacy_user', JSON.stringify(data));
   } catch (err) {
     setError(err.message);
   } finally {
