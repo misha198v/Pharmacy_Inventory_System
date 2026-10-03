@@ -5,10 +5,11 @@ export const inventoryService = {
   getMedicines: () => api.get('/medicines/'),
   addMedicine: (payload) => api.post('/medicines/', payload),
   deleteMedicine: (id) => api.delete(`/medicines/${id}/`),
+  getDashboardSummary: () => api.get('/dashboard/summary/'),
 
   // Feature 1: Low-stock detection
   checkLowStock: (medicines, threshold = 20) => {
-    return medicines.filter(item => item.quantity < threshold);
+    return medicines.filter(item => item.stock_quantity < threshold);
   },
 
   // Feature 2: Expiration sorting
@@ -20,8 +21,8 @@ export const inventoryService = {
   filterMedicines: (medicines, query) => {
     const lowerQuery = query.toLowerCase();
     return medicines.filter(item => 
-      item.description.toLowerCase().includes(lowerQuery) ||
-      item.batch_number.toLowerCase().includes(lowerQuery)
+      (item.description || '').toLowerCase().includes(lowerQuery) ||
+      (item.batch_number || '').toLowerCase().includes(lowerQuery)
     );
   }
 };

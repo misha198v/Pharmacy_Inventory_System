@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Medicine, UserProfile
+from .models import Medicine, UserProfile, InventoryLog
 
 class MedicineSerializer(serializers.ModelSerializer):
     status = serializers.ReadOnlyField()
@@ -18,6 +18,27 @@ class MedicineSerializer(serializers.ModelSerializer):
 
     def get_added_by_username(self, obj):
         return obj.added_by.username if obj.added_by else "Unknown"
+
+    def validate(self, data):
+        instance = Medicine(**{**data, 'pk': self.instance.pk if self.instance else None})
+        instance.clean()
+        return data
+
+
+class InventoryLogSerializer(serializers.ModelSerializer):
+    performed_by_username = serializers.SerializerMethodField()
+
+    class Meta:
+        model = InventoryLog
+        fields = [
+            'id', 'medicine', 'medicine_name', 'action',
+            'stock_before', 'stock_after', 'reason',
+            'performed_by_username', 'timestamp',
+        ]
+
+    def get_performed_by_username(self, obj):
+        return obj.performed_by.username if obj.performed_by else "Unknown"
+
 
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
