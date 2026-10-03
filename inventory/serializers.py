@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Medicine, UserProfile
 
+
 class MedicineSerializer(serializers.ModelSerializer):
     status = serializers.ReadOnlyField()
     days_until_expiry = serializers.ReadOnlyField()
@@ -18,6 +19,11 @@ class MedicineSerializer(serializers.ModelSerializer):
 
     def get_added_by_username(self, obj):
         return obj.added_by.username if obj.added_by else "Unknown"
+
+    def validate(self, data):
+        instance = Medicine(**{**data, 'pk': self.instance.pk if self.instance else None})
+        instance.clean()
+        return data
 
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()

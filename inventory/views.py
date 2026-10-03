@@ -1,17 +1,24 @@
-from .permissions import IsManagerOrReadOnly 
+from .permissions import IsManagerOrReadOnly
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from .models import Medicine, UserProfile
 from .serializers import MedicineSerializer, UserSerializer
 
+
+class LoginRateThrottle(ScopedRateThrottle):
+    scope = 'auth_login'
+
+
 # LOGIN VIEW
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([LoginRateThrottle])
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
@@ -37,28 +44,8 @@ def login_view(request):
 class MedicineViewSet(viewsets.ModelViewSet):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
-    permission_classes = [IsAuthenticated, IsManagerOrReadOnly]
+    permission_classes = [IsManagerOrReadOnly]
 
     def perform_create(self, serializer):
         # Save who added the medicine
         serializer.save(added_by=self.request.user)
-
-    def update(self, request, *args, **kwargs):
-        # Only managers can edit
-        try:
-            role = request.user.userprofile.role
-        except:
-            role = 'staff'
-        if role != 'manager':
-            return Response({'error': 'Only managers can edit medicines.'}, status=403)
-        return super().update(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        # Only managers can delete
-        try:
-            role = request.user.userprofile.role
-        except:
-            role = 'staff'
-        if role != 'manager':
-            return Response({'error': 'Only managers can delete medicines.'}, status=403)
-        return super().destroy(request, *args, **kwargs)
