@@ -80,12 +80,30 @@ class Medicine(models.Model):
     def days_until_expiry(self):
         today = timezone.now().date()
         return (self.expiry_date - today).days
-
 class InventoryLog(models.Model):
-    medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
-    action = models.CharField(max_length=50)
+    ACTION_CHOICES = [
+        ('CREATE', 'Created'),
+        ('UPDATE', 'Updated'),
+        ('DELETE', 'Deleted'),
+    ]
+
+    medicine = models.ForeignKey(
+        Medicine, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='logs'
+    )
+    medicine_name = models.CharField(max_length=200)  # kept even if medicine is deleted
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    stock_before = models.IntegerField(null=True, blank=True)
+    stock_after = models.IntegerField(null=True, blank=True)
+    reason = models.CharField(max_length=255, blank=True, null=True)
     performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.action} - {self.medicine_name} by {self.performed_by}"
 
     class Meta:
         ordering = ['-timestamp']

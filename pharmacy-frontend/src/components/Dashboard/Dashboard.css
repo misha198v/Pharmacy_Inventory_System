@@ -1,0 +1,85 @@
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.summary-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.summary-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.summary-card p {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.summary-card.low-stock p {
+  color: #d97706;
+}
+
+.summary-card.expiring p {
+  color: #dc2626;
+}
+
+.medicine-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.medicine-table th,
+.medicine-table td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.medicine-table th {
+  background: #f9fafb;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.status-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-ok {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-reorder {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-expiring {
+  background: #fed7aa;
+  color: #9a3412;
+}
+
+.status-expired {
+  background: #fee2e2;
+  color: #991b1b;
+}
