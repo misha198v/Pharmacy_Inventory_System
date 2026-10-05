@@ -16,7 +16,7 @@ export default function Dashboard() {
     ])
       .then(([summaryRes, medicinesRes]) => {
         setSummary(summaryRes.data);
-        setMedicines(medicinesRes.data);
+        setMedicines(medicinesRes.data.results);
         setLoading(false);
       })
       .catch(() => {

@@ -103,6 +103,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
+    #---pagination---
+    'DEFAULT_Pagination_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE ': 20,
     # --- Add Throttling / Rate Limiting Defaults ---
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',

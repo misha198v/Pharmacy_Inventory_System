@@ -106,6 +106,29 @@ def dashboard_summary(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def low_stock_medicines(request):
+    medicines = [m for m in Medicine.objects.all() if m.status == 'REORDER']
+    serializer = MedicineSerializer(medicines, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def expired_medicines(request):
+    medicines = [m for m in Medicine.objects.all() if m.status == 'EXPIRED']
+    serializer = MedicineSerializer(medicines, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def near_expiry_medicines(request):
+    medicines = [m for m in Medicine.objects.all() if m.status == 'EXPIRING']
+    serializer = MedicineSerializer(medicines, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def medicine_history(request, medicine_id):
     logs = InventoryLog.objects.filter(medicine_id=medicine_id)
     serializer = InventoryLogSerializer(logs, many=True)
