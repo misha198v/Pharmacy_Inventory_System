@@ -103,6 +103,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
+    #---pagination---
+    'DEFAULT_Pagination_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE ': 20,
     # --- Add Throttling / Rate Limiting Defaults ---
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
@@ -113,4 +116,5 @@ REST_FRAMEWORK = {
         'user': '1000/hour',     # Limit regular authenticated users
         'auth_login': '5/minute', # Strict limit specifically for login attempts (brute-force protection)
     },
+        'EXCEPTION_HANDLER': 'inventory.exceptions.custom_exception_handler',
 }

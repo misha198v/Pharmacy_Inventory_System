@@ -1,15 +1,17 @@
-from .permissions import IsManagerOrReadOnly
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, permission_classes, throttle_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes, action
 from rest_framework.permissions import AllowAny, IsAuthenticated 
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from django.db.models import Sum, F 
+
+from .permissions import IsManagerOrReadOnly
 from .models import Medicine, UserProfile, InventoryLog 
 from .serializers import MedicineSerializer, UserSerializer, InventoryLogSerializer
-from django.db.models import Sum, F 
+
 
 class LoginRateThrottle(ScopedRateThrottle):
     scope = 'auth_login'
@@ -27,7 +29,7 @@ def login_view(request):
         token, _ = Token.objects.get_or_create(user=user)
         try:
             role = user.userprofile.role
-        except:
+        except Exception:
             role = 'staff'
         return Response({
             'user': {
@@ -83,6 +85,14 @@ class MedicineViewSet(viewsets.ModelViewSet):
         )
         instance.delete()
 
+    @action(detail=True, methods=['get'])
+    def history(self, request, pk=None):
+        logs = InventoryLog.objects.filter(medicine_id=pk)
+        serializer = InventoryLogSerializer(logs, many=True)
+        return Response(serializer.data)
+
+
+# DASHBOARD & SUMMARY VIEWS
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard_summary(request):
@@ -103,6 +113,30 @@ def dashboard_summary(request):
         'low_stock_count': low_stock_count,
         'expiring_soon_count': expiring_soon_count,
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def low_stock_medicines(request):
+    medicines = [m for m in Medicine.objects.all() if m.status == 'REORDER']
+    serializer = MedicineSerializer(medicines, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def expired_medicines(request):
+    medicines = [m for m in Medicine.objects.all() if m.status == 'EXPIRED']
+    serializer = MedicineSerializer(medicines, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def near_expiry_medicines(request):
+    medicines = [m for m in Medicine.objects.all() if m.status == 'EXPIRING']
+    serializer = MedicineSerializer(medicines, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

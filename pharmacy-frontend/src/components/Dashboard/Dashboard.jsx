@@ -16,7 +16,10 @@ export default function Dashboard() {
     ])
       .then(([summaryRes, medicinesRes]) => {
         setSummary(summaryRes.data);
-        setMedicines(medicinesRes.data);
+        
+        const list = medicinesRes.data.results || medicinesRes.data;
+        setMedicines(Array.isArray(list) ? list : []);
+
         setLoading(false);
       })
       .catch(() => {

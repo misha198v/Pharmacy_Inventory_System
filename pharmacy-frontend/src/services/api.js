@@ -9,7 +9,12 @@ export const api = axios.create({
 
 // Add token to requests
 api.interceptors.request.use((config) => {
-  const user = JSON.parse(localStorage.getItem('pharmacy_user'));
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem('pharmacy_user'));
+  } catch {
+    user = null;
+  }
   if (user?.token) {
     config.headers.Authorization = `Token ${user.token}`;
   }
@@ -18,9 +23,10 @@ api.interceptors.request.use((config) => {
 
 // Handle errors globally
 api.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response?.status === 401) {
+  (response) => response,
+  (error) => {
+    const isLoginRequest = error.config?.url?.includes('/login/');
+    if (error.response?.status === 401 && !isLoginRequest) {
       localStorage.removeItem('pharmacy_user');
       window.location.href = '/';
     }
