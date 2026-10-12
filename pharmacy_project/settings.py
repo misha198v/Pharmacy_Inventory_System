@@ -116,4 +116,5 @@ REST_FRAMEWORK = {
         'user': '1000/hour',     # Limit regular authenticated users
         'auth_login': '5/minute', # Strict limit specifically for login attempts (brute-force protection)
     },
+        'EXCEPTION_HANDLER': 'inventory.exceptions.custom_exception_handler',
 }
