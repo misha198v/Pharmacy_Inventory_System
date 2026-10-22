@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AppLayout from '../Layout/AppLayout';
+import SalesPanel from '../Sales/SalesPanel';
+import ReorderPanel from '../Reorder/ReorderPanel';
 import { inventoryService } from '../../services/inventory.service';
 import './Dashboard.css';
 
@@ -8,25 +10,35 @@ export default function Dashboard() {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const loadData = useCallback(async () => {
+    try {
+      const [summaryRes, medicinesRes] = await Promise.all([
+        inventoryService.getDashboardSummary(),
+        inventoryService.getMedicines(),
+      ]);
+      setSummary(summaryRes.data);
+
+      const list = medicinesRes.data.results || medicinesRes.data;
+      setMedicines(Array.isArray(list) ? list : []);
+      setError('');
+    } catch {
+      setError('Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    Promise.all([
-      inventoryService.getDashboardSummary(),
-      inventoryService.getMedicines(),
-    ])
-      .then(([summaryRes, medicinesRes]) => {
-        setSummary(summaryRes.data);
-        
-        const list = medicinesRes.data.results || medicinesRes.data;
-        setMedicines(Array.isArray(list) ? list : []);
+    loadData();
+  }, [loadData]);
 
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Failed to load dashboard data.');
-        setLoading(false);
-      });
-  }, []);
+  // After a sale: reload the cards and table, and refresh the suggestions
+  const handleSaleRecorded = () => {
+    loadData();
+    setRefreshKey((k) => k + 1);
+  };
 
   if (loading) return <AppLayout><p>Loading dashboard...</p></AppLayout>;
   if (error) return <AppLayout><p className="error-text">{error}</p></AppLayout>;
@@ -81,6 +93,9 @@ export default function Dashboard() {
           ))}
         </tbody>
       </table>
+
+      <SalesPanel onSaleRecorded={handleSaleRecorded} />
+      <ReorderPanel refreshKey={refreshKey} />
     </AppLayout>
   );
 }

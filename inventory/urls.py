@@ -1,9 +1,17 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 from .views import (
-    MedicineViewSet, login_view, medicine_history, dashboard_summary,
-    low_stock_medicines, expired_medicines, near_expiry_medicines,
+    MedicineViewSet,
+    login_view,
+    medicine_history,
+    dashboard_summary,
+    low_stock_medicines,
+    expired_medicines,
+    near_expiry_medicines,
 )
+from .sales_views import sales
+from .forecast_views import reorder_suggestions
 
 router = DefaultRouter()
 router.register(r'medicines', MedicineViewSet, basename='medicine')
@@ -11,6 +19,8 @@ router.register(r'medicines', MedicineViewSet, basename='medicine')
 urlpatterns = [
     path('', include(router.urls)),
     path('login/', login_view, name='login'),
+    path('sales/', sales, name='sales'),
+    path('reorder-suggestions/', reorder_suggestions, name='reorder-suggestions'),
     path('medicines/<int:medicine_id>/history/', medicine_history, name='medicine-history'),
     path('dashboard/summary/', dashboard_summary, name='dashboard-summary'),
     path('medicines-low-stock/', low_stock_medicines, name='low-stock'),

@@ -1,0 +1,55 @@
+.pn-card {
+  background: #fff;
+  border: 1px solid #cdd8d3;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+  color: #12201b;
+}
+.pn-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.pn-title { margin: 0 0 0.25rem; font-size: 1.15rem; }
+.pn-sub { margin: 0 0 1rem; color: #4b5b55; font-size: 0.9rem; }
+
+.pn-form { display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+.pn-field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1 1 220px; }
+.pn-field-small { flex: 0 0 120px; }
+.pn-field label { font-size: 0.85rem; font-weight: 600; }
+.pn-field input {
+  height: 2.6rem; padding: 0 0.8rem; font: inherit;
+  border: 1.5px solid #cdd8d3; border-radius: 8px;
+}
+.pn-field input:focus { outline: none; border-color: #14805e; box-shadow: 0 0 0 3px rgba(20,128,94,.2); }
+
+.pn-btn {
+  height: 2.6rem; padding: 0 1.2rem; font: inherit; font-weight: 600;
+  color: #fff; background: #14805e; border: 1.5px solid #14805e;
+  border-radius: 999px; cursor: pointer;
+}
+.pn-btn:hover:not(:disabled) { background: #0f6b4e; }
+.pn-btn:disabled { opacity: .6; cursor: progress; }
+.pn-btn-ghost { background: transparent; color: #14805e; margin-left: .5rem; }
+.pn-btn-ghost:hover:not(:disabled) { background: #e3f2ec; }
+
+.pn-confirm {
+  margin-top: 1rem; padding: .9rem 1rem; background: #fff7e8;
+  border: 1px solid #e8a33d; border-radius: 8px;
+}
+.pn-confirm p { margin: 0 0 .7rem; }
+.pn-alert {
+  margin-top: 1rem; padding: .7rem 1rem; color: #8a1c13; background: #fdecea;
+  border: 1px solid #f2b8b5; border-left: 4px solid #b42318; border-radius: 8px;
+}
+.pn-result { margin-top: 1rem; }
+
+.pn-scroll { overflow-x: auto; }
+.pn-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.pn-table th, .pn-table td { padding: .6rem .75rem; text-align: left; border-bottom: 1px solid #e3ebe7; }
+.pn-table th { font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: #4b5b55; }
+
+.pn-badge { display: inline-block; padding: .15rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+.pn-badge-ORDER_NOW { background: #fdecea; color: #8a1c13; }
+.pn-badge-EXPIRY_RISK { background: #ffe0d1; color: #9a3412; }
+.pn-badge-ORDER_SOON { background: #fff3d6; color: #7a4f00; }
+.pn-badge-OK { background: #e3f2ec; color: #0b3d2e; }
+.pn-badge-OVERSTOCKED { background: #e6edf7; color: #1d3a6b; }
+.pn-badge-NO_SALES_DATA { background: #eceeed; color: #4b5b55; }

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.conf import settings
 
 
 class UserProfile(models.Model):
@@ -110,3 +111,22 @@ class InventoryLog(models.Model):
 
     def __str__(self):
         return f"{self.action} - {self.medicine.name}"
+
+class Sale(models.Model):
+    medicine = models.ForeignKey(
+        Medicine, on_delete=models.SET_NULL, null=True, related_name='sales'
+    )
+    medicine_name = models.CharField(max_length=200)   # kept even if the medicine is deleted
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    stock_after = models.IntegerField()                # stock left after this sale
+    sale_date = models.DateField(default=timezone.localdate)
+    sold_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-sale_date', '-created_at']
+
+    def __str__(self):
+        return f"{self.quantity} x {self.medicine_name} on {self.sale_date}"
