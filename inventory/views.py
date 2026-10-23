@@ -1,23 +1,34 @@
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, permission_classes, throttle_classes, action
-from rest_framework.permissions import AllowAny, IsAuthenticated 
+from rest_framework.decorators import api_view, permission_classes, action, throttle_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from django.db.models import Sum, F 
+from django.db.models import Sum, F
+from django.core.exceptions import ValidationError
 
 from .permissions import IsManagerOrReadOnly
-from .models import Medicine, UserProfile, InventoryLog 
-from .serializers import MedicineSerializer, UserSerializer, InventoryLogSerializer
+from .models import Medicine, InventoryLog, BatchStock
+from .serializers import (
+    MedicineSerializer,
+    InventoryLogSerializer,
+    BatchStockSerializer,
+    StockMovementSerializer,
+)
+from .services import (
+    sell_medicine,
+    receive_stock,
+    forecast_reorder_for_medicine,
+    get_expiring_batches,
+)
 
 
 class LoginRateThrottle(ScopedRateThrottle):
     scope = 'auth_login'
 
 
-# LOGIN VIEW
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @throttle_classes([LoginRateThrottle])
@@ -42,7 +53,6 @@ def login_view(request):
     return Response({'detail': 'Invalid username or password'}, status=401)
 
 
-# MEDICINE VIEWSET
 class MedicineViewSet(viewsets.ModelViewSet):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
@@ -91,15 +101,69 @@ class MedicineViewSet(viewsets.ModelViewSet):
         serializer = InventoryLogSerializer(logs, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['post'])
+    def receive_stock(self, request, pk=None):
+        medicine = self.get_object()
+        batch_number = request.data.get('batch_number')
+        expiry_date = request.data.get('expiry_date')
+        quantity = int(request.data.get('quantity', 0))
+        cost_price = request.data.get('cost_price', 0)
+        supplier = request.data.get('supplier', '')
+        notes = request.data.get('notes', '')
 
-# DASHBOARD & SUMMARY VIEWS
+        if not batch_number or not expiry_date or quantity <= 0:
+            return Response({"detail": "batch_number, expiry_date, and quantity are required."}, status=400)
+
+        try:
+            receive_stock(
+                medicine_id=medicine.id,
+                batch_number=batch_number,
+                expiry_date=expiry_date,
+                quantity=quantity,
+                performed_by=request.user,
+                cost_price=cost_price,
+                supplier=supplier,
+                notes=notes
+            )
+            return Response({"detail": "Stock received successfully."})
+        except ValidationError as e:
+            return Response({"detail": str(e)}, status=400)
+
+    @action(detail=True, methods=['post'])
+    def sell_stock(self, request, pk=None):
+        medicine = self.get_object()
+        quantity = int(request.data.get('quantity', 0))
+        reason = request.data.get('reason', '')
+
+        if quantity <= 0:
+            return Response({"detail": "Quantity must be greater than zero."}, status=400)
+
+        try:
+            sell_medicine(medicine.id, quantity, request.user, reason)
+            return Response({"detail": "Sale processed successfully."})
+        except ValidationError as e:
+            return Response({"detail": str(e)}, status=400)
+
+    @action(detail=True, methods=['get'])
+    def batch_stock(self, request, pk=None):
+        medicine = self.get_object()
+        batches = BatchStock.objects.filter(medicine=medicine).order_by('expiry_date')
+        serializer = BatchStockSerializer(batches, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def reorder_forecast(self, request, pk=None):
+        medicine = self.get_object()
+        data = forecast_reorder_for_medicine(medicine.id)
+        return Response(data)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard_summary(request):
     medicines = Medicine.objects.all()
 
     total_medicines = medicines.count()
-
     total_stock_value = medicines.aggregate(
         total=Sum(F('price') * F('stock_quantity'))
     )['total'] or 0
@@ -138,9 +202,25 @@ def near_expiry_medicines(request):
     serializer = MedicineSerializer(medicines, many=True)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def medicine_history(request, medicine_id):
     logs = InventoryLog.objects.filter(medicine_id=medicine_id)
     serializer = InventoryLogSerializer(logs, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def expiring_batches(request):
+    batches = get_expiring_batches()
+    serializer = BatchStockSerializer(batches, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def medicine_reorder_forecast(request, medicine_id):
+    result = forecast_reorder_for_medicine(medicine_id)
+    return Response(result)

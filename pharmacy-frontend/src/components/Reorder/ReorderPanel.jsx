@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { getReorderSuggestions } from '../../services/sales.service';
+import { createOrder, getReorderSuggestions } from '../../services/sales.service';
+import { formatApiError } from '../../utils/apiError';
 import '../Common/Panels.css';
+import '../Common/PanelsExtra.css';
 
 const STATUS_LABEL = {
   ORDER_NOW: 'Order now',
@@ -11,10 +13,12 @@ const STATUS_LABEL = {
   NO_SALES_DATA: 'No sales data',
 };
 
-export default function ReorderPanel({ refreshKey }) {
+export default function ReorderPanel({ refreshKey, isManager, onOrdered }) {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [busyName, setBusyName] = useState(null);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -32,6 +36,33 @@ export default function ReorderPanel({ refreshKey }) {
   useEffect(() => {
     load();
   }, [load, refreshKey]);
+
+  const handleOrder = async (item) => {
+    const ok = window.confirm(
+      `Create a purchase order for ${item.suggested_order} x ${item.medicine_name}?`
+    );
+    if (!ok) return;
+
+    setBusyName(item.medicine_name);
+    setError('');
+    setNotice('');
+    try {
+      await createOrder({
+        medicine_name: item.medicine_name,
+        quantity: item.suggested_order,
+      });
+      setNotice(
+        `Order created for ${item.suggested_order} x ${item.medicine_name}. You can follow it under Purchase orders.`
+      );
+      if (onOrdered) onOrdered();
+    } catch (err) {
+      setError(formatApiError(err, 'Could not create the order.'));
+    } finally {
+      setBusyName(null);
+    }
+  };
+
+  const columns = isManager ? 8 : 7;
 
   return (
     <section className="pn-card">
@@ -52,6 +83,7 @@ export default function ReorderPanel({ refreshKey }) {
           {error}
         </div>
       )}
+      {notice && <div className="pn-success">{notice}</div>}
 
       <div className="pn-scroll">
         <table className="pn-table">
@@ -64,6 +96,7 @@ export default function ReorderPanel({ refreshKey }) {
               <th>Likely to expire unsold</th>
               <th>Suggested order</th>
               <th>Status</th>
+              {isManager && <th>Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -80,11 +113,26 @@ export default function ReorderPanel({ refreshKey }) {
                     {STATUS_LABEL[it.status] || it.status}
                   </span>
                 </td>
+                {isManager && (
+                  <td>
+                    {it.suggested_order > 0 && (
+                      <button
+                        className="pn-btn pn-btn-small"
+                        onClick={() => handleOrder(it)}
+                        disabled={busyName === it.medicine_name}
+                      >
+                        {busyName === it.medicine_name
+                          ? 'Ordering...'
+                          : `Order ${it.suggested_order}`}
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
             {!isLoading && items.length === 0 && (
               <tr>
-                <td colSpan="7">No medicines yet.</td>
+                <td colSpan={columns}>No medicines yet.</td>
               </tr>
             )}
           </tbody>

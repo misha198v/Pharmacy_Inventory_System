@@ -1,0 +1,79 @@
+/* Sales vs forecast chart. Colors are roles, defined once here. */
+.ins-chart {
+  --ins-actual: #2a78d6;     /* categorical slot 1 */
+  --ins-forecast: #eb6834;   /* categorical slot 2 */
+  --ins-text: #12201b;
+  --ins-text-2: #52514e;
+  --ins-muted: #898781;
+  --ins-grid: #e1e0d9;
+  --ins-base: #c3c2b7;
+  --ins-hover: rgba(11, 11, 11, 0.05);
+  --ins-surface: #ffffff;
+  margin-top: 1rem;
+}
+
+.ins-title { margin: 0 0 0.2rem; font-size: 1rem; font-weight: 600; }
+.ins-sub { margin: 0 0 0.75rem; color: var(--ins-text-2); font-size: 0.88rem; line-height: 1.45; }
+
+.ins-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--ins-text-2);
+}
+.ins-key { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ins-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+.ins-swatch-actual { background: var(--ins-actual); }
+.ins-swatch-forecast { background: var(--ins-forecast); }
+.ins-link {
+  margin-left: auto;
+  padding: 0.2rem 0.4rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #14805e;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ins-link:hover { background: #e3f2ec; }
+
+.ins-scroll { overflow-x: auto; }
+.ins-plot { position: relative; min-width: 640px; }
+.ins-plot svg { display: block; width: 100%; height: auto; }
+
+.ins-axis-text { fill: var(--ins-muted); font-size: 11px; }
+.ins-divider-text { fill: var(--ins-text-2); font-size: 11px; font-weight: 600; }
+
+.ins-tooltip {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--ins-text);
+  background: var(--ins-surface);
+  border: 1px solid var(--ins-grid);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(11, 11, 11, 0.12);
+  white-space: nowrap;
+  z-index: 2;
+}
+.ins-tooltip strong { display: block; }
+.ins-tooltip .ins-tt-row { display: flex; align-items: center; gap: 0.4rem; color: var(--ins-text-2); }
+
+.ins-empty {
+  margin: 1rem 0 0;
+  padding: 1.2rem;
+  color: var(--ins-text-2);
+  background: #f6f8f7;
+  border-radius: 8px;
+}
+.ins-history { margin-top: 1.5rem; }
+.ins-history h3 { margin: 0 0 0.5rem; font-size: 1rem; }

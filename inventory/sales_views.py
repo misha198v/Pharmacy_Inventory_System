@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from .audit import log_change
 from .models import Medicine, Sale
 
 
@@ -68,6 +69,7 @@ def sales(request):
             if remaining == 0:
                 break
             take = min(remaining, batch.stock_quantity)
+            stock_before = batch.stock_quantity
             batch.stock_quantity -= take
             batch.save(update_fields=['stock_quantity'])
 
@@ -78,6 +80,11 @@ def sales(request):
                 stock_after=batch.stock_quantity,
                 sale_date=today,
                 sold_by=request.user,
+            )
+            # the audit trail: one line per batch touched
+            log_change(
+                batch, 'UPDATE', stock_before, batch.stock_quantity,
+                f'Sale of {take} (FEFO)', request.user,
             )
             allocations.append({
                 'batch_number': batch.batch_number,

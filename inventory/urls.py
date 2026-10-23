@@ -12,6 +12,8 @@ from .views import (
 )
 from .sales_views import sales
 from .forecast_views import reorder_suggestions
+from .ops_views import orders, receive_order, write_off, history, forecast_chart
+from .user_views import users, user_active, user_reset_password
 
 router = DefaultRouter()
 router.register(r'medicines', MedicineViewSet, basename='medicine')
@@ -21,6 +23,14 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('sales/', sales, name='sales'),
     path('reorder-suggestions/', reorder_suggestions, name='reorder-suggestions'),
+    path('orders/', orders, name='orders'),
+    path('orders/<int:order_id>/receive/', receive_order, name='order-receive'),
+    path('medicines/<int:medicine_id>/write-off/', write_off, name='write-off'),
+    path('history/', history, name='history'),
+    path('users/', users, name='users'),
+    path('users/<int:user_id>/active/', user_active, name='user-active'),
+    path('users/<int:user_id>/reset-password/', user_reset_password, name='user-reset-password'),
+    path('forecast-chart/', forecast_chart, name='forecast-chart'),
     path('medicines/<int:medicine_id>/history/', medicine_history, name='medicine-history'),
     path('dashboard/summary/', dashboard_summary, name='dashboard-summary'),
     path('medicines-low-stock/', low_stock_medicines, name='low-stock'),

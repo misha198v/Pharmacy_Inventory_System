@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AppLayout from '../Layout/AppLayout';
+import AlertsPanel from '../Alerts/AlertsPanel';
 import SalesPanel from '../Sales/SalesPanel';
+import InsightsPanel from '../Insights/InsightsPanel';
 import ReorderPanel from '../Reorder/ReorderPanel';
+import OrdersPanel from '../Orders/OrdersPanel';
+import AddMedicinePanel from '../Inventory/AddMedicinePanel';
+import UsersPanel from '../Users/UsersPanel';
+import { useAuth } from '../../context/AuthContext';
 import { inventoryService } from '../../services/inventory.service';
 import './Dashboard.css';
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const isManager = user?.role === 'manager';
+
   const [summary, setSummary] = useState(null);
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,14 +43,17 @@ export default function Dashboard() {
     loadData();
   }, [loadData]);
 
-  // After a sale: reload the cards and table, and refresh the suggestions
-  const handleSaleRecorded = () => {
+  // Anything that changes stock (a sale, an order received, a write-off, new stock)
+  // reloads the cards and table, and refreshes every panel.
+  const refreshAll = () => {
     loadData();
     setRefreshKey((k) => k + 1);
   };
 
   if (loading) return <AppLayout><p>Loading dashboard...</p></AppLayout>;
   if (error) return <AppLayout><p className="error-text">{error}</p></AppLayout>;
+
+  const names = [...new Set(medicines.map((m) => m.name))];
 
   return (
     <AppLayout>
@@ -65,6 +77,8 @@ export default function Dashboard() {
           <p>{summary.expiring_soon_count}</p>
         </div>
       </div>
+
+      <AlertsPanel medicines={medicines} isManager={isManager} onChanged={refreshAll} />
 
       <h2>Inventory</h2>
       <table className="medicine-table">
@@ -94,8 +108,12 @@ export default function Dashboard() {
         </tbody>
       </table>
 
-      <SalesPanel onSaleRecorded={handleSaleRecorded} />
-      <ReorderPanel refreshKey={refreshKey} />
+      <SalesPanel onSaleRecorded={refreshAll} />
+      <InsightsPanel names={names} refreshKey={refreshKey} />
+      <ReorderPanel refreshKey={refreshKey} isManager={isManager} onOrdered={refreshAll} />
+      <OrdersPanel refreshKey={refreshKey} onChanged={refreshAll} />
+      <AddMedicinePanel medicines={medicines} onAdded={refreshAll} />
+      {isManager && <UsersPanel currentUsername={user?.username} />}
     </AppLayout>
   );
 }
