@@ -5,6 +5,9 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.conf import settings
 
+# A batch with fewer days than this left is flagged EXPIRING.
+NEAR_EXPIRY_DAYS = 30
+
 
 class UserProfile(models.Model):
     ROLE_CHOICES = [('staff', 'Staff'), ('manager', 'Manager')]
@@ -15,7 +18,24 @@ class UserProfile(models.Model):
         return f"{self.user.username} - {self.role}"
 
 
+class MedicineQuerySet(models.QuerySet):
+    def sellable(self, today=None):
+        """Batches that may be sold: in stock and not expired.
+
+        One shared definition, so the sale screen, the dashboard and the
+        reorder suggestions all agree on what 'sellable stock' means.
+        """
+        today = today or timezone.localdate()
+        return self.filter(stock_quantity__gt=0, expiry_date__gte=today)
+
+    def fefo_order(self):
+        """Earliest expiry first; id breaks ties so the order is stable."""
+        return self.order_by('expiry_date', 'id')
+
+
 class Medicine(models.Model):
+    """One row = one batch of a medicine."""
+
     name = models.CharField(max_length=200)
     generic_name = models.CharField(max_length=200, blank=True, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
@@ -43,6 +63,8 @@ class Medicine(models.Model):
     supplier = models.CharField(max_length=200, blank=True, null=True)
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    objects = MedicineQuerySet.as_manager()
+
     class Meta:
         ordering = ['expiry_date']
         constraints = [
@@ -58,34 +80,35 @@ class Medicine(models.Model):
 
     def clean(self):
         # Prevent adding a brand-new medicine record with an already-past expiry date.
-        # (Existing expired stock is allowed to remain and be flagged — this only
+        # (Existing expired stock is allowed to remain and be flagged. This only
         # blocks creating a new record that's expired from day one.)
-        if self.expiry_date and self.expiry_date < timezone.now().date() and not self.pk:
+        if self.expiry_date and self.expiry_date < timezone.localdate() and not self.pk:
             raise ValidationError({
                 'expiry_date': 'Expiry date cannot be in the past for a new medicine entry.'
             })
 
     @property
+    def days_until_expiry(self):
+        return (self.expiry_date - timezone.localdate()).days
+
+    @property
     def status(self):
-        today = timezone.now().date()
-        days_left = (self.expiry_date - today).days
+        days_left = self.days_until_expiry
         if days_left < 0:
             return "EXPIRED"
-        elif days_left < 30:
+        elif days_left < NEAR_EXPIRY_DAYS:
             return "EXPIRING"
         elif self.stock_quantity < self.reorder_level:
             return "REORDER"
         return "OK"
 
-    @property
-    def days_until_expiry(self):
-        today = timezone.now().date()
-        return (self.expiry_date - today).days
+
 class InventoryLog(models.Model):
     ACTION_CHOICES = [
         ('CREATE', 'Created'),
         ('UPDATE', 'Updated'),
         ('DELETE', 'Deleted'),
+        ('SALE', 'Sold'),
     ]
 
     medicine = models.ForeignKey(
@@ -106,11 +129,6 @@ class InventoryLog(models.Model):
     def __str__(self):
         return f"{self.action} - {self.medicine_name} by {self.performed_by}"
 
-    class Meta:
-        ordering = ['-timestamp']
-
-    def __str__(self):
-        return f"{self.action} - {self.medicine.name}"
 
 class Sale(models.Model):
     medicine = models.ForeignKey(
@@ -127,6 +145,10 @@ class Sale(models.Model):
 
     class Meta:
         ordering = ['-sale_date', '-created_at']
+        indexes = [
+            # The forecast reads sales by date and medicine name.
+            models.Index(fields=['sale_date', 'medicine_name'], name='sale_date_name_idx'),
+        ]
 
     def __str__(self):
         return f"{self.quantity} x {self.medicine_name} on {self.sale_date}"
