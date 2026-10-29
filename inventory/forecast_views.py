@@ -4,6 +4,8 @@ from rest_framework.response import Response
 
 from .forecast import build_suggestions
 
+MAX_DAYS = 365
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -13,6 +15,9 @@ def reorder_suggestions(request):
         cover = int(request.query_params.get('cover_days', 14))
     except ValueError:
         return Response({'detail': 'lead_days and cover_days must be whole numbers.'}, status=400)
-    if lead < 1 or cover < 1:
-        return Response({'detail': 'lead_days and cover_days must be at least 1.'}, status=400)
+    if not (1 <= lead <= MAX_DAYS and 1 <= cover <= MAX_DAYS):
+        return Response(
+            {'detail': f'lead_days and cover_days must be between 1 and {MAX_DAYS}.'},
+            status=400,
+        )
     return Response(build_suggestions(lead, cover))

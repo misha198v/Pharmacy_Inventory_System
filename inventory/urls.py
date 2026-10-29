@@ -11,6 +11,7 @@ from .views import (
     near_expiry_medicines,
 )
 from .sales_views import sales
+from .scan_views import scan, link_barcode
 from .forecast_views import reorder_suggestions
 from .ops_views import orders, receive_order, write_off, history, forecast_chart
 from .user_views import users, user_active, user_reset_password
@@ -22,6 +23,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('login/', login_view, name='login'),
     path('sales/', sales, name='sales'),
+    path('scan/', scan, name='scan'),
+    path('scan/link/', link_barcode, name='scan-link'),
     path('reorder-suggestions/', reorder_suggestions, name='reorder-suggestions'),
     path('orders/', orders, name='orders'),
     path('orders/<int:order_id>/receive/', receive_order, name='order-receive'),
