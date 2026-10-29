@@ -40,6 +40,9 @@ class Medicine(models.Model):
     generic_name = models.CharField(max_length=200, blank=True, null=True)
     category = models.CharField(max_length=100, blank=True, null=True)
     batch_number = models.CharField(max_length=100, blank=True, null=True)
+    # The barcode printed on the pack. It identifies the product, so every
+    # batch of the same medicine carries the same value.
+    barcode = models.CharField(max_length=64, blank=True, null=True, db_index=True)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(
         max_digits=10, decimal_places=2,

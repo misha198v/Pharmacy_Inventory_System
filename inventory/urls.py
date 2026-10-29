@@ -11,6 +11,7 @@ from .views import (
     near_expiry_medicines,
 )
 from .sales_views import sales
+from .scan_views import scan, link_barcode
 from .forecast_views import reorder_suggestions
 
 router = DefaultRouter()
@@ -20,6 +21,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('login/', login_view, name='login'),
     path('sales/', sales, name='sales'),
+    path('scan/', scan, name='scan'),
+    path('scan/link/', link_barcode, name='scan-link'),
     path('reorder-suggestions/', reorder_suggestions, name='reorder-suggestions'),
     path('medicines/<int:medicine_id>/history/', medicine_history, name='medicine-history'),
     path('dashboard/summary/', dashboard_summary, name='dashboard-summary'),

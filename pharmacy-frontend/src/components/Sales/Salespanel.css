@@ -1,0 +1,121 @@
+/* Extra styles for the scan-first sale panel. Put this next to SalesPanel.jsx.
+   It only adds new "sp-" classes and does not change Panels.css. */
+
+.sp-scan { margin-top: 12px; }
+
+.sp-scan-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.sp-scan-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sp-scan-input,
+.sp-scan-row select {
+  flex: 1 1 260px;
+  min-width: 0;
+  padding: 14px 16px;
+  font-size: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.sp-scan-input:focus,
+.sp-scan-row select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.sp-link {
+  background: none;
+  border: none;
+  padding: 8px 0 0;
+  color: #1d4ed8;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.sp-link:disabled { color: #94a3b8; cursor: default; }
+
+/* the "Remove" link inside the table should sit level with the row text */
+.pn-table .sp-link { padding: 0; }
+
+/* the green / amber / red answer after each scan */
+.sp-verdict {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+}
+
+.sp-verdict strong { display: block; font-size: 16px; }
+.sp-verdict p { margin: 4px 0 0; font-size: 14px; }
+
+.sp-good { background: #e8f6ef; border-color: #9fd8bd; color: #0b5e3f; }
+.sp-warn { background: #fff7e0; border-color: #f1d27a; color: #7a5200; }
+.sp-bad  { background: #fdecec; border-color: #f0a7a7; color: #9b1c1c; }
+
+.sp-link-box {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  font-size: 14px;
+}
+
+/* shelf order: which batch goes first and which are locked */
+.sp-queue,
+.sp-basket { margin-top: 20px; }
+
+.sp-queue-title { font-size: 14px; margin: 0 0 8px; }
+
+.sp-queue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.sp-batch {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.sp-batch-no { font-weight: 700; min-width: 90px; }
+
+.sp-chip {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sp-batch-next { border-color: #9fd8bd; background: #f1faf5; }
+.sp-batch-next .sp-chip { background: #c9ecdb; color: #0b5e3f; }
+
+.sp-batch-locked { background: #f1f5f9; color: #64748b; }
+.sp-batch-locked .sp-chip { background: #e2e8f0; color: #475569; }
+
+.sp-batch-used { background: #f8fafc; color: #94a3b8; }
+.sp-batch-used .sp-chip { background: #e2e8f0; color: #64748b; }
+
+.sp-actions { display: flex; gap: 10px; margin-top: 14px; }
