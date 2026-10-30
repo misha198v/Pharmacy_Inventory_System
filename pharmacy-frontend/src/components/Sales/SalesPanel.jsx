@@ -361,6 +361,16 @@ export default function SalesPanel({ onSaleRecorded }) {
                   ))}
                 </tbody>
               </table>
+              <p>
+                <a
+                  className="sp-link"
+                  href={`/patient.html?name=${encodeURIComponent(r.medicine)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open the patient information page for {r.medicine}
+                </a>
+              </p>
             </div>
           ))}
         </div>
