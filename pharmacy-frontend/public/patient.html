@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pharmio – Know your medicine</title>
+<meta name="description" content="Scan the barcode on your medicine to see what it is for and how it is usually taken.">
+<style>
+  :root {
+    --blue-900: #0b3d91;
+    --blue-700: #1d5fc9;
+    --blue-600: #2f7bea;
+    --blue-50: #eef4ff;
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #dbe3f0;
+    --bg: #f4f8ff;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .top {
+    background: linear-gradient(135deg, var(--blue-600), var(--blue-900));
+    color: #fff;
+    padding: 14px 16px;
+  }
+  .top-inner { max-width: 600px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .top svg { width: 44px; height: 44px; flex: none; }
+  .brand { font-size: 22px; font-weight: 800; letter-spacing: .2px; line-height: 1.1; }
+  .tagline { font-size: 14px; opacity: .9; }
+  main { max-width: 600px; margin: 0 auto; padding: 20px 16px 8px; }
+  h1 { font-size: 26px; line-height: 1.2; margin: 4px 0 6px; color: var(--blue-900); }
+  .lead { margin: 0 0 16px; color: var(--muted); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: 12px 20px;
+    border-radius: 12px; border: 2px solid var(--blue-700);
+    font: inherit; font-weight: 700; cursor: pointer; text-align: center;
+  }
+  .btn.primary { background: var(--blue-700); color: #fff; }
+  .btn.secondary { background: #fff; color: var(--blue-700); }
+  .btn.ghost { background: transparent; color: var(--blue-700); border-color: var(--line); }
+  .btn:focus-visible, input:focus-visible { outline: 3px solid var(--blue-600); outline-offset: 2px; }
+  .actions { display: grid; gap: 10px; }
+  @media (min-width: 520px) { .actions { grid-template-columns: 1fr 1fr; } }
+
+  #reader-box { margin-top: 14px; background: #000; border-radius: 14px; overflow: hidden; }
+  #reader { width: 100%; }
+  #reader-box .btn { margin: 10px; width: calc(100% - 20px); background: #fff; }
+
+  .typed { margin-top: 18px; }
+  .typed label { display: block; font-weight: 600; margin-bottom: 6px; }
+  .row { display: flex; gap: 10px; }
+  .row input {
+    flex: 1; min-width: 0; min-height: 48px; padding: 10px 14px;
+    font: inherit; border: 2px solid var(--line); border-radius: 12px; background: #fff;
+  }
+
+  #status { margin: 16px 0 0; }
+  .msg { padding: 12px 14px; border-radius: 12px; font-size: 16px; }
+  .msg.info { background: var(--blue-50); color: var(--blue-900); }
+  .msg.warn { background: #fff3d6; color: #7a5200; }
+  .msg.bad  { background: #fdecec; color: #9b1c1c; }
+
+  #results { margin-top: 16px; }
+  .pick { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .pick button {
+    width: 100%; text-align: left; min-height: 56px; padding: 10px 14px;
+    background: #fff; border: 2px solid var(--line); border-radius: 12px; font: inherit; cursor: pointer;
+  }
+  .pick button span { display: block; color: var(--muted); font-size: 14px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 16px 16px; }
+  .card:focus { outline: none; }
+  .card h2 { font-size: 24px; line-height: 1.2; margin: 0; color: var(--blue-900); }
+  .meta { color: var(--muted); font-size: 15px; margin: 4px 0 0; }
+  .draft { background: #fff3d6; color: #7a5200; border-radius: 10px; padding: 10px 12px; font-size: 15px; margin-bottom: 12px; }
+
+  .purpose { margin: 16px 0 4px; padding: 14px; border-radius: 14px; }
+  .purpose small { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; opacity: .85; }
+  .purpose strong { display: block; font-size: 26px; line-height: 1.15; margin: 2px 0 4px; }
+  .purpose p { margin: 0; font-size: 16px; }
+  .p-TREATS { background: #e3f5ec; color: #0b5e3f; }
+  .p-PREVENTS { background: #e4edff; color: #0b3d91; }
+  .p-RELIEVES { background: #fff3d6; color: #7a5200; }
+  .p-SUPPLEMENT { background: #eaeff5; color: #334155; }
+
+  .card h3 { font-size: 18px; margin: 20px 0 6px; color: var(--blue-900); }
+  .card p { margin: 0 0 8px; }
+  .card ul { margin: 0; padding-left: 20px; }
+  .card li { margin-bottom: 8px; }
+  .help { background: #fdecec; border-radius: 12px; padding: 4px 14px 8px; margin-top: 20px; }
+  .help h3 { color: #9b1c1c; margin-top: 12px; }
+  .similar { background: var(--blue-50); border-radius: 12px; padding: 4px 14px 12px; margin-top: 20px; }
+  .similar h3 { margin-top: 12px; }
+  .caution { font-size: 15px; color: var(--muted); margin-top: 8px; }
+  .reviewed { font-size: 14px; color: var(--muted); margin-top: 16px; }
+  .disclaimer { font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 16px; }
+
+  footer { max-width: 600px; margin: 0 auto; padding: 20px 16px 36px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <svg viewBox="0 0 240 240" role="img" aria-label="Pharmio logo">
+      <defs>
+        <linearGradient id="pg-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2F7BEA"/><stop offset="1" stop-color="#0B3D91"/></linearGradient>
+        <linearGradient id="pg-red" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F0473F"/><stop offset="1" stop-color="#C62828"/></linearGradient>
+        <linearGradient id="pg-yellow" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFD54F"/><stop offset="1" stop-color="#F5B000"/></linearGradient>
+      </defs>
+      <rect width="240" height="240" rx="52" fill="url(#pg-bg)" stroke="#ffffff" stroke-opacity=".5" stroke-width="6"/>
+      <path d="M92 156 L92 184 A28 28 0 0 0 148 184 L148 156 Z" fill="url(#pg-yellow)"/>
+      <ellipse cx="120" cy="156" rx="28" ry="7" fill="#B77F00"/>
+      <path d="M93 156 Q99 132 120 126 Q141 132 147 156 Q120 164 93 156 Z" fill="#F4F8FF"/>
+      <rect x="99" y="162" width="6" height="30" rx="3" fill="#FFFFFF" opacity="0.35"/>
+      <path d="M121 100 Q117 114 114 128 L128 130 Q130 114 138 98 Z" fill="#F4F8FF"/>
+      <circle cx="108" cy="116" r="2.6" fill="#F4F8FF"/><circle cx="133" cy="118" r="2.2" fill="#F4F8FF"/>
+      <circle cx="111" cy="104" r="2" fill="#F4F8FF" opacity="0.8"/><circle cx="141" cy="110" r="1.8" fill="#F4F8FF" opacity="0.8"/>
+      <g transform="translate(130 96) rotate(40)">
+        <path d="M-28 0 L-28 -42 A28 28 0 0 1 28 -42 L28 0 Z" fill="url(#pg-red)"/>
+        <ellipse cx="0" cy="0" rx="28" ry="7" fill="#7F1D1D"/><ellipse cx="0" cy="0" rx="22" ry="4.5" fill="#F4F8FF"/>
+        <rect x="-21" y="-62" width="6" height="52" rx="3" fill="#FFFFFF" opacity="0.3"/>
+      </g>
+    </svg>
+    <div>
+      <div class="brand">Pharmio</div>
+      <div class="tagline">Know your medicine</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1>What is my medicine for?</h1>
+  <p class="lead">Scan the barcode on your medicine box to see what it is for and how it is usually taken.</p>
+
+  <div class="actions">
+    <button id="btn-camera" class="btn primary" type="button">Scan with camera</button>
+    <label class="btn secondary" for="photo">Take a photo of the barcode</label>
+    <input id="photo" type="file" accept="image/*" capture="environment" hidden>
+  </div>
+
+  <div id="reader-box" hidden>
+    <div id="reader"></div>
+    <button id="btn-stop" class="btn ghost" type="button">Stop camera</button>
+  </div>
+  <div id="reader-file" hidden></div>
+
+  <form id="form" class="typed" autocomplete="off">
+    <label for="q">Or type the barcode number or the medicine name</label>
+    <div class="row">
+      <input id="q" name="q" type="text" inputmode="search" placeholder="For example: amoxicillin">
+      <button class="btn primary" type="submit">Look up</button>
+    </div>
+  </form>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <section id="results" aria-live="polite"></section>
+</main>
+
+<footer>
+  Pharmio explains medicines in plain language. It is not a doctor and it cannot diagnose you.
+  If you feel very unwell, go to a health centre now.
+</footer>
+
+<noscript><p style="padding:16px">This page needs JavaScript to look up your medicine.</p></noscript>
+
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Where the Pharmio server lives. Change this one line when the system is deployed,
+  // or set window.PHARMIO_API_BASE before this script runs.
+  var API_BASE = String(window.PHARMIO_API_BASE || 'http://localhost:8000/api').replace(/\/+$/, '');
+
+  var $ = function (id) { return document.getElementById(id); };
+  var statusEl = $('status');
+  var resultsEl = $('results');
+  var scanner = null;
+
+  // ---------- small helpers (text only, so nothing from the server is run as HTML) ----------
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined && text !== null) node.textContent = text;
+    return node;
+  }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+  function setStatus(message, kind) {
+    clear(statusEl);
+    if (message) statusEl.appendChild(el('div', 'msg ' + (kind || 'info'), message));
+  }
+  function getJSON(path, params) {
+    var url = API_BASE + path + '?' + new URLSearchParams(params).toString();
+    return fetch(url).then(function (res) {
+      if (res.status === 429) throw new Error('slow-down');
+      if (!res.ok) throw new Error('http-' + res.status);
+      return res.json();
+    });
+  }
+  function explain(err) {
+    if (err && err.message === 'slow-down') return 'Too many lookups at once. Please wait a minute and try again.';
+    return 'We could not reach the Pharmio server. Check your internet connection and try again.';
+  }
+
+  // ---------- drawing a drug ----------
+  function section(card, title, items, cls) {
+    if (!items || !items.length) return null;
+    var box = el('div', cls || '');
+    box.appendChild(el('h3', '', title));
+    var ul = el('ul');
+    items.forEach(function (t) { ul.appendChild(el('li', '', t)); });
+    box.appendChild(ul);
+    card.appendChild(box);
+    return box;
+  }
+
+  function showDrug(d) {
+    clear(resultsEl);
+    setStatus('');
+    var card = el('article', 'card');
+    card.tabIndex = -1;
+
+    if (!d.reviewed) {
+      card.appendChild(el('div', 'draft',
+        'Draft information for demonstration. A pharmacist has not reviewed it yet.'));
+    }
+    card.appendChild(el('h2', '', d.name));
+    var meta = d.generic_name;
+    if (d.drug_group) meta += ' · ' + d.drug_group;
+    card.appendChild(el('p', 'meta', meta));
+    if (d.also_sold_as.length) card.appendChild(el('p', 'meta', 'Also sold as: ' + d.also_sold_as.join(', ')));
+
+    var purpose = el('div', 'purpose p-' + d.purpose);
+    purpose.appendChild(el('small', '', 'This medicine'));
+    purpose.appendChild(el('strong', '', d.purpose_label.toUpperCase()));
+    if (d.purpose_note) purpose.appendChild(el('p', '', d.purpose_note));
+    card.appendChild(purpose);
+
+    card.appendChild(el('h3', '', 'What it is for'));
+    card.appendChild(el('p', '', d.what_it_is_for));
+
+    section(card, 'How it is usually taken', d.how_it_is_usually_taken);
+    section(card, 'Before you take it', d.before_you_take_it);
+    section(card, 'Get medical help if', d.get_help_if, 'help');
+
+    var similar = section(card, 'Medicines that work like this one', d.similar_medicines, 'similar');
+    if (similar) {
+      similar.appendChild(el('p', 'caution',
+        'These are in the same group or used for the same problem. Only a clinician or pharmacist can decide ' +
+        'if one can replace another. Never swap medicines yourself.'));
+    }
+
+    if (d.reviewed) {
+      card.appendChild(el('p', 'reviewed', 'Reviewed by ' + d.reviewed_by + ' on ' + d.reviewed_on + '.'));
+    }
+    card.appendChild(el('p', 'disclaimer', d.disclaimer));
+
+    resultsEl.appendChild(card);
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    card.focus({ preventScroll: true });
+  }
+
+  function showChoices(list) {
+    clear(resultsEl);
+    setStatus('Choose your medicine:', 'info');
+    var ul = el('ul', 'pick');
+    list.forEach(function (r) {
+      var li = el('li');
+      var b = el('button', '', r.name);
+      b.type = 'button';
+      b.appendChild(el('span', '', r.generic_name + ' · ' + r.purpose_label));
+      b.addEventListener('click', function () { openById(r.id); });
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+    resultsEl.appendChild(ul);
+  }
+
+  function notFound(message, scanned) {
+    clear(resultsEl);
+    var text = (scanned ? 'Barcode ' + scanned + ' was not recognised. ' : '') + message;
+    setStatus(text, 'warn');
+  }
+
+  // ---------- looking things up ----------
+  function show(response, scanned) {
+    if (response.found) showDrug(response.drug);
+    else notFound(response.message, scanned);
+  }
+
+  function openById(id) {
+    setStatus('Looking it up…');
+    getJSON('/patient/lookup/', { id: id }).then(function (r) { show(r); })
+      .catch(function (e) { setStatus(explain(e), 'bad'); });
+  }
+
+  function handleScanned(code) {
+    code = String(code || '').trim();
+    if (!code) return;
+    $('q').value = '';
+    setStatus('Scanned ' + code + '. Looking it up…');
+    getJSON('/patient/lookup/', { code: code }).then(function (r) { show(r, code); })
+      .catch(function (e) { setStatus(explain(e), 'bad'); });
+  }
+
+  function handleTyped(text) {
+    text = String(text || '').trim();
+    if (!text) { setStatus('Type a barcode number or a medicine name first.', 'warn'); return; }
+    setStatus('Looking it up…');
+    // A typed barcode number matches exactly. If it is not one, treat it as a name.
+    getJSON('/patient/lookup/', { code: text }).then(function (byCode) {
+      if (byCode.found) return show(byCode);
+      return getJSON('/patient/search/', { q: text }).then(function (s) {
+        if (s.results.length === 1) return openById(s.results[0].id);
+        if (s.results.length > 1) return showChoices(s.results);
+        notFound(byCode.message);
+      });
+    }).catch(function (e) { setStatus(explain(e), 'bad'); });
+  }
+
+  // ---------- camera and photo ----------
+  function formats() {
+    var f = window.Html5QrcodeSupportedFormats;
+    if (!f) return undefined;
+    return [f.EAN_13, f.EAN_8, f.UPC_A, f.UPC_E, f.CODE_128, f.CODE_39, f.QR_CODE, f.DATA_MATRIX];
+  }
+
+  function stopCamera() {
+    if (!scanner) { $('reader-box').hidden = true; return Promise.resolve(); }
+    var s = scanner;
+    scanner = null;
+    return s.stop().catch(function () {}).then(function () {
+      try { s.clear(); } catch (e) {}
+      $('reader-box').hidden = true;
+    });
+  }
+
+  function cameraProblem(err) {
+    var name = err && err.name ? err.name : '';
+    if (!window.isSecureContext || !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+      return 'Your browser only allows the camera on a secure (https) page. ' +
+             'Use "Take a photo of the barcode", or type the number.';
+    }
+    if (name === 'NotAllowedError' || /permission/i.test(String(err))) {
+      return 'The camera was not allowed. Allow it in your browser settings, or use "Take a photo of the barcode".';
+    }
+    return 'The camera could not start. Use "Take a photo of the barcode", or type the number.';
+  }
+
+  function startCamera() {
+    if (!window.Html5Qrcode) {
+      setStatus('Camera scanning could not load. You can still take a photo of the barcode or type the number.', 'warn');
+      return;
+    }
+    setStatus('');
+    $('reader-box').hidden = false;
+    scanner = new Html5Qrcode('reader', { verbose: false, formatsToSupport: formats() });
+    scanner.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 260, height: 140 } },
+      function (text) { stopCamera().then(function () { handleScanned(text); }); },
+      function () {}
+    ).catch(function (err) {
+      scanner = null;
+      $('reader-box').hidden = true;
+      setStatus(cameraProblem(err), 'warn');
+    });
+  }
+
+  function readPhoto(file) {
+    if (!window.Html5Qrcode) {
+      setStatus('Barcode reading could not load. Please type the number instead.', 'warn');
+      return;
+    }
+    setStatus('Reading the barcode…');
+    var reader = new Html5Qrcode('reader-file', { verbose: false, formatsToSupport: formats() });
+    reader.scanFile(file, false).then(function (text) {
+      try { reader.clear(); } catch (e) {}
+      handleScanned(text);
+    }).catch(function () {
+      setStatus('We could not read a barcode in that photo. Try again with the barcode filling most of the photo, ' +
+                'in good light and held still, or type the number.', 'warn');
+    });
+  }
+
+  // ---------- wiring ----------
+  $('btn-camera').addEventListener('click', startCamera);
+  $('btn-stop').addEventListener('click', function () { stopCamera(); });
+  $('photo').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    if (file) readPhoto(file);
+    e.target.value = '';
+  });
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    stopCamera();
+    handleTyped($('q').value);
+  });
+
+  // A link such as patient.html?code=6001001 or patient.html?name=Amoxicillin%20500mg
+  // opens straight to the medicine (for a QR code on a receipt, or a link from the pharmacy).
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('code')) handleScanned(params.get('code'));
+  else if (params.get('name')) {
+    setStatus('Looking it up…');
+    getJSON('/patient/lookup/', { name: params.get('name') }).then(function (r) { show(r); })
+      .catch(function (e) { setStatus(explain(e), 'bad'); });
+  } else if (params.get('id')) openById(params.get('id'));
+})();
+</script>
+</body>
+</html>

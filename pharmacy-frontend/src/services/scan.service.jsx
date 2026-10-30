@@ -1,4 +1,4 @@
-import api from './api';
+import {api} from './api';
 
 // Check one scanned pack. Body: { code } or { medicine_name }, plus optional
 // batch_number (printed on the pack) and basket ({ "name": units }).

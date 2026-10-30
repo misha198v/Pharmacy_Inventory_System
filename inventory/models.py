@@ -155,3 +155,57 @@ class Sale(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.medicine_name} on {self.sale_date}"
+
+
+class DrugInfo(models.Model):
+    """Plain-language information about one medicine, written for patients.
+
+    This is the shared drug record: the pharmacy side finds it by medicine name
+    or barcode, and the patient page shows it. It holds no stock, price or
+    pharmacy data, so it is safe to show to anyone.
+    """
+
+    PURPOSE_CHOICES = [
+        ('TREATS', 'Treats'),
+        ('PREVENTS', 'Prevents'),
+        ('RELIEVES', 'Relieves symptoms'),
+        ('SUPPLEMENT', 'Supplement'),
+    ]
+
+    # Same wording as the medicine in the inventory, e.g. "Amoxicillin 500mg".
+    name = models.CharField(max_length=200, unique=True)
+    generic_name = models.CharField(max_length=200)
+    also_sold_as = models.CharField(max_length=300, blank=True, help_text="Brand names, separated by commas.")
+    drug_group = models.CharField(max_length=120, blank=True)
+    purpose = models.CharField(max_length=12, choices=PURPOSE_CHOICES)
+    purpose_note = models.CharField(max_length=250, blank=True)
+    what_it_is_for = models.TextField()
+    # The four fields below are bullet lists: write one point per line.
+    how_it_is_usually_taken = models.TextField(blank=True, help_text="One point per line.")
+    before_you_take_it = models.TextField(blank=True, help_text="One point per line.")
+    get_help_if = models.TextField(blank=True, help_text="One point per line.")
+    similar_medicines = models.TextField(blank=True, help_text="One medicine per line.")
+    # Until a pharmacist signs it off, the patient page shows a "draft" notice.
+    reviewed_by = models.CharField(max_length=200, blank=True)
+    reviewed_on = models.DateField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def is_reviewed(self):
+        return bool(self.reviewed_by and self.reviewed_on)
+
+
+class DrugBarcode(models.Model):
+    """A barcode that belongs to a drug, so packs can be recognised even when
+    they did not come from this pharmacy's own stock."""
+
+    code = models.CharField(max_length=64, unique=True)
+    drug = models.ForeignKey(DrugInfo, on_delete=models.CASCADE, related_name='barcodes')
+
+    def __str__(self):
+        return f"{self.code} -> {self.drug.name}"

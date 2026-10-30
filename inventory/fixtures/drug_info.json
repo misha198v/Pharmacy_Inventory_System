@@ -1,0 +1,138 @@
+[
+  {
+    "model": "inventory.druginfo",
+    "pk": 1,
+    "fields": {
+      "name": "Amoxicillin 500mg",
+      "generic_name": "Amoxicillin",
+      "also_sold_as": "Amoxil",
+      "drug_group": "Antibiotic (penicillin type)",
+      "purpose": "TREATS",
+      "purpose_note": "Treats infections caused by bacteria. It does not work on colds or flu, which are caused by viruses.",
+      "what_it_is_for": "Amoxicillin is an antibiotic. It kills the bacteria that cause infections of the chest, ears, throat, sinuses, urine, skin and teeth. A clinician decides if you need it, because most coughs and colds are caused by viruses, and antibiotics do not help with those.",
+      "how_it_is_usually_taken": "Adults usually take one 500 mg capsule or tablet three times a day, about every 8 hours. Your dose may be different, so follow what your clinician or pharmacist told you.\nSwallow it with water. You can take it with or without food.\nTake it for as many days as you were told, usually 5 to 7 days. Finish the whole course even if you feel better. Stopping early can let the infection come back.\nIf you forget a dose, take it when you remember. If it is almost time for the next one, skip the missed dose. Never take two doses together.",
+      "before_you_take_it": "Do not take it if you have ever had an allergic reaction to penicillin or a similar antibiotic.\nTell the clinician or pharmacist if you are pregnant, breastfeeding or have kidney problems.\nLoose stools, feeling sick and a mild rash can happen. Drinking plenty of fluids helps.",
+      "get_help_if": "You get swelling of the face, lips or tongue, trouble breathing, or a rash that spreads fast. Go to a health centre straight away.\nYou have severe diarrhoea, or there is blood in your stool.\nYou are not getting better after 2 to 3 days of taking it.",
+      "similar_medicines": "Ampicillin (another penicillin-type antibiotic)\nCo-amoxiclav, which is amoxicillin with clavulanic acid (used when amoxicillin alone may not be enough)\nFlucloxacillin (often used for skin infections)\nPhenoxymethylpenicillin, also called penicillin V"
+    }
+  },
+  {
+    "model": "inventory.druginfo",
+    "pk": 2,
+    "fields": {
+      "name": "Paracetamol 500mg",
+      "generic_name": "Paracetamol (acetaminophen)",
+      "also_sold_as": "Panadol, Calpol, Tylenol",
+      "drug_group": "Pain and fever reliever",
+      "purpose": "RELIEVES",
+      "purpose_note": "Eases pain and brings down a fever. It does not treat the cause, such as malaria or an infection.",
+      "what_it_is_for": "Paracetamol eases mild to moderate pain such as headache, toothache, period pain and muscle aches, and it lowers a high temperature. If you have a fever in a place where malaria is common, get tested. Paracetamol only eases the fever. It does not cure malaria.",
+      "how_it_is_usually_taken": "Adults usually take 1 to 2 tablets (500 mg to 1 g) every 4 to 6 hours when needed.\nWait at least 4 hours between doses. Do not take more than 8 tablets (4 g) in 24 hours.\nChildren need a dose that matches their age or weight. Use a children's product and follow its pack, or ask the pharmacist.\nYou can take it with or without food.",
+      "before_you_take_it": "Many cold and flu products also contain paracetamol. Check the label so you do not take it twice.\nTaking too much can seriously damage the liver. Ask a pharmacist first if you have liver disease or drink a lot of alcohol.\nIf you are pregnant, ask a clinician or pharmacist before taking it.",
+      "get_help_if": "You took more than the daily limit, even if you feel well. Go to a health centre straight away, because liver damage can show up late.\nThe fever lasts more than 3 days, or the pain does not get better.\nA baby or child has a high fever and is very sleepy or not feeding.",
+      "similar_medicines": "Ibuprofen (also eases pain and fever, but it is a different type of medicine and not right for everyone)\nAspirin (not for children under 16)\nDiclofenac (a stronger pain reliever, usually used on a clinician's advice)"
+    }
+  },
+  {
+    "model": "inventory.druginfo",
+    "pk": 3,
+    "fields": {
+      "name": "Ibuprofen 400mg",
+      "generic_name": "Ibuprofen",
+      "also_sold_as": "Brufen, Nurofen, Advil",
+      "drug_group": "Anti-inflammatory pain reliever (NSAID)",
+      "purpose": "RELIEVES",
+      "purpose_note": "Eases pain, swelling and fever. It does not treat the cause.",
+      "what_it_is_for": "Ibuprofen eases pain and reduces swelling and fever. It is used for headache, toothache, period pain, muscle and joint pain and sprains.",
+      "how_it_is_usually_taken": "Adults usually take one 400 mg tablet up to 3 times a day, with or just after food and a glass of water.\nSpace the doses out. Do not take more than 3 tablets (1,200 mg) in 24 hours unless a clinician told you to.\nUse the lowest dose for the shortest time. Taking it on an empty stomach can upset it.",
+      "before_you_take_it": "Do not take it if you have a stomach ulcer or stomach bleeding, or if aspirin or similar medicines have ever triggered asthma or an allergic reaction.\nAsk a pharmacist first if you have kidney, heart or liver problems or high blood pressure, or if you take blood thinners or other pain relievers.\nAvoid it in pregnancy unless a clinician says it is fine. Do not use it in the last 3 months of pregnancy.\nDo not give it to babies or young children unless the pack says it is made for them.",
+      "get_help_if": "You vomit blood, pass black or bloody stools, or have bad stomach pain.\nYou get swelling of the face or lips, trouble breathing or a skin rash.\nThe pain or fever lasts more than 3 days.",
+      "similar_medicines": "Diclofenac and naproxen (the same type of medicine)\nAspirin (also the same type, not for children under 16)\nParacetamol (works differently and is gentler on the stomach, but it is not the same)"
+    }
+  },
+  {
+    "model": "inventory.druginfo",
+    "pk": 4,
+    "fields": {
+      "name": "Coartem 20/120",
+      "generic_name": "Artemether + lumefantrine",
+      "also_sold_as": "Coartem, Lumartem, Artefan",
+      "drug_group": "Malaria treatment (artemisinin combination)",
+      "purpose": "TREATS",
+      "purpose_note": "Treats malaria that is already in your body. It is not for preventing malaria.",
+      "what_it_is_for": "Coartem treats uncomplicated malaria, the kind where you can still swallow tablets and drink. It holds two medicines that work together to kill the malaria parasite. It should be taken after a malaria test, or a clinician's decision, shows you have malaria. Medicines that prevent malaria are different medicines with a different purpose.",
+      "how_it_is_usually_taken": "A full course is 6 doses over 3 days. Take the first dose, the second dose 8 hours later, then one dose in the morning and one in the evening on days 2 and 3.\nThe number of tablets in each dose depends on body weight. For an adult over 35 kg it is usually 4 tablets per dose, 24 tablets in all. Children take fewer, so follow the leaflet in the pack or your clinician's instructions.\nTake each dose with food or a drink that has some fat in it, such as milk. This helps your body absorb the medicine.\nIf you vomit within 1 hour of a dose, that dose needs to be taken again. Ask a pharmacist.\nFinish all 6 doses even if you feel better.",
+      "before_you_take_it": "Tell the clinician or pharmacist if you are pregnant or breastfeeding, have heart problems, or take other medicines. Some medicines do not mix well with it.\nDo not take it if you have ever had a bad reaction to artemether or lumefantrine.\nHeadache, dizziness, weakness and loss of appetite are common and usually pass.",
+      "get_help_if": "You cannot keep the tablets down, are very sleepy or confused, have fits, yellow eyes or trouble breathing. This can be severe malaria and needs urgent care.\nYou still have a fever after 3 days, or the fever comes back.\nYou get a rash, swelling of the face, or a very fast or uneven heartbeat.",
+      "similar_medicines": "Artesunate with amodiaquine\nDihydroartemisinin with piperaquine\nArtesunate with mefloquine"
+    }
+  },
+  {
+    "model": "inventory.druginfo",
+    "pk": 5,
+    "fields": {
+      "name": "Metformin 500mg",
+      "generic_name": "Metformin hydrochloride",
+      "also_sold_as": "Glucophage",
+      "drug_group": "Diabetes medicine (biguanide)",
+      "purpose": "TREATS",
+      "purpose_note": "Helps control blood sugar in type 2 diabetes. It manages the condition. It does not cure it.",
+      "what_it_is_for": "Metformin helps your body use insulin better and lowers the sugar your liver releases. It is used for type 2 diabetes, usually together with healthy eating and exercise.",
+      "how_it_is_usually_taken": "Take it with or just after meals. This reduces an upset stomach.\nPeople often start with 500 mg once or twice a day, and the clinician raises the dose slowly. Take exactly the dose you were given.\nTake it every day, even when you feel well. Do not stop without asking your clinician.\nIf you miss a dose, take it with your next meal. Do not double up.",
+      "before_you_take_it": "Tell the clinician if you have kidney, liver or heart problems, or if you drink a lot of alcohol.\nTell any doctor or dentist that you take metformin before an operation or a scan that uses dye.\nFeeling sick, loose stools and a metal taste are common at first and usually settle.",
+      "get_help_if": "You have fast breathing, severe tiredness or weakness, strong muscle pain or stomach pain, especially if you are also vomiting. This is rare but serious.\nYou have been vomiting or have had diarrhoea for more than a day and cannot drink. Ask a clinician whether to pause the medicine.\nYour blood sugar stays high even though you take it every day.",
+      "similar_medicines": "Gliclazide and glibenclamide (another type of diabetes tablet)\nSitagliptin (another type of diabetes tablet)\nInsulin (an injection)"
+    }
+  },
+  {
+    "model": "inventory.druginfo",
+    "pk": 6,
+    "fields": {
+      "name": "Cetirizine 10mg",
+      "generic_name": "Cetirizine hydrochloride",
+      "also_sold_as": "Zyrtec",
+      "drug_group": "Antihistamine (allergy relief)",
+      "purpose": "RELIEVES",
+      "purpose_note": "Eases allergy symptoms. It does not cure the allergy.",
+      "what_it_is_for": "Cetirizine relieves the sneezing, runny or blocked nose, itchy and watery eyes and itchy skin that allergies cause, such as hay fever and reactions to dust or animal hair. It also helps itchy hives.",
+      "how_it_is_usually_taken": "Adults and children aged 12 and over usually take one 10 mg tablet once a day.\nTake it with water, with or without food, at about the same time each day. Many people prefer the evening.\nYounger children need a smaller dose. Ask a pharmacist before giving it to a child under 12.",
+      "before_you_take_it": "It can make some people sleepy. Do not drive or use machinery until you know how it affects you, and avoid alcohol.\nAsk a pharmacist first if you have kidney problems, are pregnant or breastfeeding, or take other medicines that make you sleepy.",
+      "get_help_if": "You get swelling of the face, lips or tongue, or trouble breathing. This can be a severe allergic reaction.\nYour symptoms do not get better after a few days.",
+      "similar_medicines": "Loratadine (a similar allergy tablet that usually causes less sleepiness)\nFexofenadine (also usually less sleepy)\nChlorphenamine (works the same way but often makes you sleepier)"
+    }
+  },
+  {
+    "model": "inventory.druginfo",
+    "pk": 7,
+    "fields": {
+      "name": "Vitamin C 500mg",
+      "generic_name": "Ascorbic acid (vitamin C)",
+      "also_sold_as": "Redoxon",
+      "drug_group": "Vitamin supplement",
+      "purpose": "SUPPLEMENT",
+      "purpose_note": "Tops up vitamin C. It does not cure or prevent colds, flu or malaria.",
+      "what_it_is_for": "Vitamin C helps your body heal, keeps your skin, gums and blood vessels healthy, and helps your body absorb iron. Most people get enough from fruit and vegetables such as oranges, guava, mango, peppers and tomatoes. A supplement is mainly useful when your diet is low in fresh fruit and vegetables.",
+      "how_it_is_usually_taken": "Adults usually take one 500 mg tablet once a day, with or after food.\nDo not take more than the pack or your clinician says. Very large doses can cause stomach pain and diarrhoea, and taking more does not give extra protection.",
+      "before_you_take_it": "Ask a pharmacist first if you have kidney stones or kidney disease, or a condition where your body holds too much iron.\nLarge doses can upset the stomach.",
+      "get_help_if": "You get severe stomach pain, or pain in your back or side together with blood in your urine. This could be a kidney stone.",
+      "similar_medicines": "Multivitamin tablets that contain vitamin C\nFresh fruit and vegetables that are rich in vitamin C"
+    }
+  },
+  {
+    "model": "inventory.druginfo",
+    "pk": 8,
+    "fields": {
+      "name": "ORS Sachet",
+      "generic_name": "Oral rehydration salts",
+      "also_sold_as": "ORS, Dioralyte",
+      "drug_group": "Rehydration salts",
+      "purpose": "TREATS",
+      "purpose_note": "Treats dehydration (loss of water and salts) from diarrhoea or vomiting. It does not stop the diarrhoea itself.",
+      "what_it_is_for": "ORS replaces the water and salts your body loses when you have diarrhoea or vomiting. It is safe for babies, children and adults, and it can save lives, especially in young children.",
+      "how_it_is_usually_taken": "Wash your hands. Pour the whole sachet into the amount of clean drinking water shown on the sachet, usually 1 litre. Stir until it dissolves.\nDo not add sugar, and do not use more or less water than the sachet says.\nSip small amounts often. If you vomit, wait 10 minutes and then carry on slowly.\nAdults can drink as much as they want. For children, give a cup or spoon after every loose stool: about 50 to 100 ml (a quarter to half a cup) for children under 2 years, and 100 to 200 ml (half to one cup) for ages 2 to 10.\nKeep breastfeeding babies. Throw away any mixed ORS after 24 hours.\nChildren with diarrhoea are often also given zinc for 10 days. Ask the pharmacist.",
+      "before_you_take_it": "Do not mix it with milk, juice or soda, and do not boil it after mixing.\nAsk a clinician first if the person has kidney disease or is on a low-salt diet.",
+      "get_help_if": "There is blood in the stool, a high fever, or the diarrhoea lasts more than 2 days (sooner for babies).\nThe person cannot drink, keeps vomiting, is very sleepy or limp, has sunken eyes or passes very little urine. Go to a health centre straight away.",
+      "similar_medicines": "Other brands of oral rehydration salts (they work the same way when mixed as directed)\nZinc tablets, often given with ORS to children (ask a clinician)"
+    }
+  }
+]
